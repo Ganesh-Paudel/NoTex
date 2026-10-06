@@ -1,8 +1,127 @@
-note(This is a note)
-question(
-  A question??/
+note(Review these examples to see every box style available in the template.)
+
+definitionbox(A function assigns exactly one output to each input in its domain.)
+
+conceptbox(Average speed describes the total distance traveled per unit of time.)
+
+notationbox(Let d represent distance, t represent elapsed time, and v represent average speed.)
+
+objectivebox(By the end of this lesson, calculate average speed and explain the units in your answer.)
+
+contextbox(Measuring motion helps us compare journeys, plan travel times, and describe experiments.)
+
+connectionbox(Average speed connects the slope of a distance-time graph to a physical measurement.)
+
+summarybox(To calculate average speed, divide total distance by total elapsed time and include units.)
+
+question(A cyclist travels 120 meters in 10 seconds. What is the cyclist's average speed?)
+
+answer(The cyclist's average speed is 12 meters per second.)
+
+examplebox(A walker covers 30 meters in 15 seconds, so the average speed is 2 meters per second.)
+
+solutionbox(
+Step 1: Identify the distance as 120 meters and the time as 10 seconds.
+Step 2: Divide 120 by 10 to obtain 12.
+Step 3: Report the average speed as 12 meters per second.
 )
 
-answer (
-Answer to that question.
+practicebox(A runner covers 200 meters in 25 seconds. Calculate the average speed and state its units.)
+
+recallbox(Without looking at your notes, explain the difference between distance and displacement.)
+
+hintbox(Start with average speed = total distance / total time.)
+
+misconceptionbox(Average speed is not always the arithmetic mean of two speeds; the time spent at each speed matters.)
+
+askbox(How does average speed differ from instantaneous speed on a journey with several stops?)
+
+actionbox(Complete three speed problems and check that each final answer includes units.)
+
+reflectionbox(I can calculate average speed, but I need more practice interpreting changes in graph slope.)
+
+formulabox(Average speed = total distance / total elapsed time.)
+
+theorembox(For constant speed, distance is proportional to elapsed time: doubling the time doubles the distance.)
+
+proofbox(At constant speed v, the distance after time t is v * t. After time 2 * t, the distance is v * 2 * t, which is twice the original distance.)
+
+derivationbox(Start with v = d / t. Multiplying both sides by t gives d = v * t.)
+
+assumptionbox(Assume the cyclist moves at constant speed and the measured elapsed time is greater than zero.)
+
+givenbox(Given: distance = 120 meters and time = 10 seconds. Find: average speed in meters per second.)
+
+unitsbox(Distance is measured in meters (m), time in seconds (s), and speed in meters per second (m/s).)
+
+checkbox(Check the result: 12 meters per second multiplied by 10 seconds gives the original 120 meters.)
+
+specialcasebox(If elapsed time is zero, distance divided by time is undefined and cannot be used to calculate speed.)
+
+hypothesisbox(A toy car released from a higher ramp position will have a greater average speed over the measured track.)
+
+variablesbox(Independent variable: release height. Dependent variable: average speed. Controls: car, track length, and track surface.)
+
+equipmentbox(Use a toy car, an adjustable ramp, a meter ruler, a stopwatch, and a notebook.)
+
+procedurebox(
+1. Measure a 1-meter section of track.
+2. Release the car without pushing it.
+3. Record the travel time over the measured section.
+4. Repeat three times at each release height.
 )
+
+observationbox(The car reached the end of the measured section sooner when released from the higher position.)
+
+databox(Example travel times over 1 meter: trial 1 = 1.2 seconds; trial 2 = 1.1 seconds; trial 3 = 1.3 seconds.)
+
+uncertaintybox(Manual stopwatch timing introduces reaction-time uncertainty; repeated trials help reveal variation.)
+
+analysisbox(The mean travel time is 1.2 seconds. Dividing 1 meter by 1.2 seconds gives an estimated average speed of 0.83 meters per second.)
+
+conclusionbox(The example results support the hypothesis that a higher release position increases the car's average speed.)
+
+claimbox(The fictional town should improve pedestrian access near its school.)
+
+evidencebox(In a fictional class survey, 18 of 25 students reported using the same narrow sidewalk on their walk to school.)
+
+quotationbox(In the fictional survey, one student wrote: "The sidewalk is too narrow when everyone arrives together.")
+
+interpretationbox(The survey suggests that crowding is a shared concern rather than an isolated experience.)
+
+counterargumentbox(Widening the sidewalk may reduce space available for parking and require additional funding.)
+
+comparisonbox(A wider sidewalk increases walking space, while a timed arrival schedule spreads pedestrian traffic across the morning.)
+
+timelinebox(Example project timeline: week 1, collect feedback; week 2, compare proposals; week 3, present recommendations.)
+
+casebox(In a fictional school project, students mapped busy crossings and proposed a supervised crossing point.)
+
+vocabularybox(Accessible: easy to reach or use. Infrastructure: the basic facilities that support a community.)
+
+grammarbox(Use the comparative form to compare two things: "This route is safer than the other route.")
+
+codebox(
+distance = 120
+time = 10
+speed = distance / time
+print(speed)
+)
+
+outputbox(The speed calculation prints 12.0. Add a label when presenting the result: 12.0 meters per second.)
+
+debugbox(A ZeroDivisionError occurs when time is zero. Validate that time is greater than zero before dividing.)
+
+designbox(Keep input validation separate from the speed calculation so each part is easier to understand and reuse.)
+
+testbox(Input: distance = 120 and time = 10. Expected result: speed = 12. Include a separate test that rejects a time of zero.)
+
+figurebox(Imagine a distance-time graph with time on the horizontal axis and distance on the vertical axis. A straight rising line represents constant positive speed.)
+
+techniquebox(Estimate a graph's slope by choosing two clear points and dividing the change in distance by the change in time.)
+
+feedbackbox(The calculation is correct. Improve the explanation by naming the formula and showing the units in the final answer.)
+
+warning(Check that all distances and times use compatible units before calculating speed.)
+
+danger(Keep the toy-car track away from stairs and walkways to prevent trips or falls.)
