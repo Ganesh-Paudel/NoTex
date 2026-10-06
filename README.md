@@ -34,7 +34,40 @@ The converter generates the surrounding LaTeX document and loads the box definit
 
 Content can span multiple lines. Balanced parentheses inside content work normally, for example `answer(A function f(x) takes an input.)`. Use `\(` or `\)` for an unmatched literal parenthesis and `\\` for a literal backslash. Whitespace between boxes is allowed; other text outside boxes produces an error.
 
-Content is treated as plain text: LaTeX special characters are escaped automatically. Raw LaTeX commands and math syntax are not supported yet. Ordinary line breaks are treated as spaces by LaTeX; blank lines separate paragraphs.
+LaTeX special characters are escaped automatically. Raw LaTeX commands and math syntax are not supported yet. Ordinary line breaks are treated as spaces by LaTeX; blank lines separate paragraphs.
+
+## Headings and text formatting
+
+[class_notes_text.tex](class_notes_text.tex) defines the headings and text formatting loaded automatically by the converter. Use `--text-template PATH` to select another definitions file.
+
+Headings use the same parentheses syntax as boxes:
+
+```text
+title(My Class Notes)
+subtitle(Week One)
+chapter(Motion)
+section(Average Speed)
+subsection(Worked Examples)
+subsubsection(Units)
+paragraph(Reminder)
+subparagraph(Details)
+note(This is a regular paragraph.)
+```
+
+`title` and `subtitle` are centered. `chapter` is an unnumbered section heading because the generated article document has no native chapters. Sections and subsections use standard LaTeX numbering; paragraph and subparagraph headings run into the following text.
+
+Inside headings, paragraphs, and boxes, use `style{content}`:
+
+```text
+note(bold{Important}, italic{a term}, underline{a reminder}, and bold{italic{combined styles}}.)
+answer(large{The answer is 12 meters per second.})
+```
+
+Supported styles: `bold`, `italic`, `underline`, `emphasis`, `monospace`, `smallcaps`, `superscript`, and `subscript`.
+
+Sizes from smallest to largest: `tiny`, `scriptsize`, `footnotesize`, `small`, `normalsize`, `large`, `larger`, `largest`, `huge`, and `hugest`. The last five correspond to LaTeX's `large`, `Large`, `LARGE`, `huge`, and `Huge`. Size changes apply only to their enclosed text. Use blank lines to separate paragraphs; underline is best suited to short phrases because it does not wrap across lines.
+
+Escape literal braces with `\{` and `\}`; for example, `note(bold\{literal\})` prints the formatting syntax literally.
 
 ## Convert your notes
 
@@ -52,7 +85,7 @@ To create a PDF, install the LaTeX packages described below and run:
 pdflatex -interaction=nonstopmode -halt-on-error notes.tex
 ```
 
-The generated document references the absolute location of `class_notes_boxes.tex`, so you can compile it locally from another directory. To move it to another machine or an online editor, include the definitions file and change the generated `\input` line to `\input{class_notes_boxes.tex}`.
+The generated document references the absolute locations of `class_notes_boxes.tex` and `class_notes_text.tex`, so you can compile it locally from another directory. To move it to another machine or an online editor, include both definitions files and change the generated `\input` lines to relative filenames.
 
 ## Current state
 

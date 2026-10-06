@@ -1,0 +1,32 @@
+% Reusable headings and text formatting for generated NoteX documents.
+% Load in the preamble after the document class and font packages.
+\newcommand{\NotesTitle}[1]{\begin{center}{\Huge\bfseries #1\par}\end{center}}
+\newcommand{\NotesSubtitle}[1]{\begin{center}{\Large #1\par}\end{center}}
+% Article documents have no native chapter command.
+\newcommand{\NotesChapter}[1]{\section*{#1}}
+\newcommand{\NotesSection}[1]{\section{#1}}
+\newcommand{\NotesSubsection}[1]{\subsection{#1}}
+\newcommand{\NotesSubsubsection}[1]{\subsubsection{#1}}
+\newcommand{\NotesParagraph}[1]{\paragraph{#1}}
+\newcommand{\NotesSubparagraph}[1]{\subparagraph{#1}}
+
+\newcommand{\NotesBold}[1]{\textbf{#1}}
+\newcommand{\NotesItalic}[1]{\textit{#1}}
+\newcommand{\NotesUnderline}[1]{\underline{#1}}
+\newcommand{\NotesEmphasis}[1]{\emph{#1}}
+\newcommand{\NotesMonospace}[1]{\texttt{#1}}
+\newcommand{\NotesSmallcaps}[1]{\textsc{#1}}
+\newcommand{\NotesSuperscript}[1]{\textsuperscript{#1}}
+\newcommand{\NotesSubscript}[1]{\textsubscript{#1}}
+
+% Group each size change so it cannot affect subsequent text.
+\newcommand{\NotesTiny}[1]{{\tiny #1}}
+\newcommand{\NotesScriptsize}[1]{{\scriptsize #1}}
+\newcommand{\NotesFootnotesize}[1]{{\footnotesize #1}}
+\newcommand{\NotesSmall}[1]{{\small #1}}
+\newcommand{\NotesNormalsize}[1]{{\normalsize #1}}
+\newcommand{\NotesLarge}[1]{{\large #1}}
+\newcommand{\NotesLarger}[1]{{\Large #1}}
+\newcommand{\NotesLargest}[1]{{\LARGE #1}}
+\newcommand{\NotesHuge}[1]{{\huge #1}}
+\newcommand{\NotesHugest}[1]{{\Huge #1}}
