@@ -224,3 +224,6 @@ This creates `class_notes_boxes.pdf`; the second pass fills its table of content
 The converter and PDF build foundation are implemented. Watching notes, scheduling builds, and displaying updates are the next milestones; there is no preview server or watcher yet. See [the live preview implementation plan](docs/live-preview.md) for architecture, build ordering, API proposals, and acceptance tests.
 
 Before a public package release, choose a project license and confirm the distribution name. No license or public registry ownership has been assumed.
+
+
+AI was used for most of the building of this tool.
