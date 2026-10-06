@@ -1,3 +1,8 @@
+title(Statistics and Probability)
+subtitle(Probability mass Function)
+
+note(It's a basic function)
+
 title(NoteX Formatting and Box Examples)
 subtitle(A guide to structured class notes)
 chapter(Text Formatting)
@@ -14,6 +19,39 @@ note(bold{Bold text}, italic{italic text}, underline{underlined text}, emphasis{
 note(Combine styles with bold{italic{bold and italic}}. Write x superscript{2} and H subscript{2}O.)
 subparagraph(Text Sizes)
 note(tiny{Tiny}, scriptsize{script size}, footnotesize{footnote size}, small{small}, normalsize{normal}, large{large}, larger{larger}, largest{largest}, huge{huge}, and hugest{hugest}.)
+section(Mathematics)
+note(Inline fractions and nested roots: math{1/10} and math{sqrt(1/10)}.)
+note(Math inside formatting: bold{The probability is math{1/10}.})
+
+equation((a+b)/(c-d))
+equation(root(x,3))
+equation(summation(i^2,i,1,n))
+equation(product(i,i,1,n))
+equation(integral(x^2,x))
+equation(integral(x^2,x,0,1))
+equation(derivative(x^3,x))
+equation(derivative(x^3,x,2))
+equation(partial(x*y,x))
+equation(partial(x^2*y,x,2))
+equation(partial(partial(f(x,y),x),y))
+equation(integral(integral(x*y,x,0,1),y,0,2))
+equation(limit(sin(x)/x,x,0))
+equation(P(X=k)=binom(n,k)*p^k*(1-p)^{n-k})
+equation(x_i^2+2*x_i+1=(x_i+1)^2)
+equation(x=(-b+/-sqrt(b^2-4*a*c))/(2*a))
+equation(sqrt(summation(i^2,i,1,n))/integral(exp(-x),x,0,inf))
+note(Greek letters and infinity: math{alpha+beta+pi}, math{α+π}, and math{∞}.)
+note(Scientific notation and factorials: math{1.5e-3}, math{n!}, math{abs(x)}, and math{log(x,2)}.)
+
+equation(
+  a=(x+1)^2
+  =x^2+2*x+1
+  b=a/2
+)
+note(Math rows can also use math{x=1; y=2} or math{x=1 newline() y=2}.)
+note(This is the first text line. newline() This is the second text line.)
+newline()
+
 section(Box Examples)
 note(Review these examples to see every box style available in the template.)
 
@@ -57,7 +95,7 @@ actionbox(Complete three speed problems and check that each final answer include
 
 reflectionbox(I can calculate average speed, but I need more practice interpreting changes in graph slope.)
 
-formulabox(Average speed = total distance / total elapsed time.)
+formulabox(Average speed: math{v=d/t}.)
 
 theorembox(For constant speed, distance is proportional to elapsed time: doubling the time doubles the distance.)
 

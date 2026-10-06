@@ -3,11 +3,19 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 
+\usepackage{amsmath,amssymb}
+
 \def\NotesBoxesOnly{1}
 \input{\detokenize{/home/paudel/projects/notex/src/notex/templates/class_notes_boxes.tex}}
 \input{\detokenize{/home/paudel/projects/notex/src/notex/templates/class_notes_text.tex}}
 
 \begin{document}
+
+\NotesTitle{Statistics and Probability}
+
+\NotesSubtitle{Probability mass Function}
+
+It's a basic function
 
 \NotesTitle{NoteX Formatting and Box Examples}
 
@@ -32,6 +40,104 @@ Combine styles with \NotesBold{\NotesItalic{bold and italic}}. Write x \NotesSup
 \NotesSubparagraph{Text Sizes}
 
 \NotesTiny{Tiny}, \NotesScriptsize{script size}, \NotesFootnotesize{footnote size}, \NotesSmall{small}, \NotesNormalsize{normal}, \NotesLarge{large}, \NotesLarger{larger}, \NotesLargest{largest}, \NotesHuge{huge}, and \NotesHugest{hugest}.
+
+\NotesSection{Mathematics}
+
+Inline fractions and nested roots: \(\frac{1}{10}\) and \(\sqrt{\frac{1}{10}}\).
+
+Math inside formatting: \NotesBold{The probability is \(\frac{1}{10}\).}
+
+\[
+\frac{a + b}{c - d}
+\]
+
+\[
+\sqrt[3]{x}
+\]
+
+\[
+\sum_{i=1}^{n} {i^{2}}
+\]
+
+\[
+\prod_{i=1}^{n} {i}
+\]
+
+\[
+\int {x^{2}}\,\mathrm{d}x
+\]
+
+\[
+\int_{0}^{1} {x^{2}}\,\mathrm{d}x
+\]
+
+\[
+\frac{\mathrm{d}}{\mathrm{d}x}\left(x^{3}\right)
+\]
+
+\[
+\frac{\mathrm{d}^{2}}{\mathrm{d}{x}^{2}}\left(x^{3}\right)
+\]
+
+\[
+\frac{\partial}{\partial x}\left(x \cdot y\right)
+\]
+
+\[
+\frac{\partial^{2}}{\partial{x}^{2}}\left(x^{2} \cdot y\right)
+\]
+
+\[
+\frac{\partial}{\partial y}\left(\frac{\partial}{\partial x}\left(f\left(x, y\right)\right)\right)
+\]
+
+\[
+\int_{0}^{2} {\int_{0}^{1} {x \cdot y}\,\mathrm{d}x}\,\mathrm{d}y
+\]
+
+\[
+\lim_{x\to 0} \left(\frac{\sin\left(x\right)}{x}\right)
+\]
+
+\[
+P\left(X = k\right) = \binom{n}{k} \cdot p^{k} \cdot \left(1 - p\right)^{n - k}
+\]
+
+\[
+x_{i}^{2} + 2 \cdot x_{i} + 1 = \left(x_{i} + 1\right)^{2}
+\]
+
+\[
+x = \frac{-b \pm \sqrt{b^{2} - 4 \cdot a \cdot c}}{2 \cdot a}
+\]
+
+\[
+\frac{\sqrt{\sum_{i=1}^{n} {i^{2}}}}{\int_{0}^{\infty} {\exp\left(-x\right)}\,\mathrm{d}x}
+\]
+
+Greek letters and infinity: \(\alpha + \beta + \pi\), \(\alpha + \pi\), and \(\infty\).
+
+Scientific notation and factorials: \(1.5 \times 10^{-3}\), \(n!\), \(\left|x\right|\), and \(\log_{2}\left(x\right)\).
+
+\[
+\begin{aligned}
+a &= \left(x + 1\right)^{2} \\
+&= x^{2} + 2 \cdot x + 1 \\
+b &= \frac{a}{2}
+\end{aligned}
+\]
+
+Math rows can also use \(\begin{aligned}
+x &= 1 \\
+y &= 2
+\end{aligned}\) or \(\begin{aligned}
+x &= 1 \\
+y &= 2
+\end{aligned}\).
+
+This is the first text line. \leavevmode\newline{} This is the second text line.
+
+\par\medskip
 
 \NotesSection{Box Examples}
 
@@ -112,7 +218,7 @@ I can calculate average speed, but I need more practice interpreting changes in 
 \end{reflectionbox}
 
 \begin{formulabox}
-Average speed = total distance / total elapsed time.
+Average speed: \(v = \frac{d}{t}\).
 \end{formulabox}
 
 \begin{theorembox}

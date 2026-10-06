@@ -60,6 +60,18 @@ class CliTests(unittest.TestCase):
         self.assertEqual(self.output.read_text(), "last successful tex")
         self.assertEqual(self.pdf.read_bytes(), b"last successful pdf")
 
+    def test_invalid_math_uses_structured_diagnostics_and_preserves_output(self):
+        self.output.write_text("last successful tex")
+        self.source.write_text("note(ok)\nnote(math{sqrt(1,)})")
+        code, stdout, stderr = self.invoke("--json")
+        self.assertEqual(code, 1)
+        self.assertEqual(stdout, "")
+        diagnostic = json.loads(stderr)["diagnostics"][0]
+        self.assertEqual(
+            (diagnostic["kind"], diagnostic["line"], diagnostic["column"]), ("syntax", 2, 18)
+        )
+        self.assertEqual(self.output.read_text(), "last successful tex")
+
     def test_failed_compilation_preserves_existing_outputs(self):
         self.output.write_text("last successful tex")
         self.pdf.write_bytes(b"last successful pdf")

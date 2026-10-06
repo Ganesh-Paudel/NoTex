@@ -9,6 +9,7 @@ from pathlib import Path
 from .models import Box
 from .parser import parse_notes
 from .renderer import render_document
+from .syntax import BUILTIN_EXPRESSIONS, INLINE_BUILTINS
 from .templates import (
     DEFAULT_TEMPLATE,
     DEFAULT_TEXT_TEMPLATE,
@@ -35,8 +36,13 @@ def convert_source(
     names = load_box_names(template)
     headings, styles = load_text_commands(text_template)
     collisions = names.intersection(headings)
-    if collisions or "note" in headings:
-        raise ValueError("Heading names must not overlap box names or the built-in 'note'")
+    if (
+        collisions
+        or headings.keys() & BUILTIN_EXPRESSIONS
+        or styles.keys() & INLINE_BUILTINS
+        or names & (BUILTIN_EXPRESSIONS - {"note"})
+    ):
+        raise ValueError("Template names must not overlap built-in syntax or heading/box names")
     expressions = tuple(parse_notes(source, names, headings=headings, styles=styles))
     return ConversionResult(expressions, render_document(expressions, template, text_template))
 

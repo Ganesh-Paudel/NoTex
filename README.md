@@ -57,7 +57,7 @@ The converter generates the surrounding LaTeX document and loads the box definit
 
 Content can span multiple lines. Balanced parentheses inside content work normally, for example `answer(A function f(x) takes an input.)`. Use `\(` or `\)` for an unmatched literal parenthesis and `\\` for a literal backslash. Whitespace between boxes is allowed; other text outside boxes produces an error.
 
-LaTeX special characters are escaped automatically. Raw LaTeX commands and math syntax are not supported yet. Ordinary line breaks are treated as spaces by LaTeX; blank lines separate paragraphs.
+LaTeX special characters in ordinary text are escaped automatically. Use `math{...}` for mathematical notation; raw LaTeX commands are not accepted. Ordinary text line breaks are treated as spaces by LaTeX; blank lines separate paragraphs and `newline()` forces a text line break.
 
 ## Headings and text formatting
 
@@ -95,6 +95,38 @@ Escape literal braces with `\{` and `\}`; for example, `note(bold\{literal\})` p
 Unescaped parentheses and braces must balance, including inside formatted text. Escapes `\(`, `\)`, `\{`, `\}`, and `\\` are interpreted once. Malformed input reports a line and column in the original notes file. Delimiter and formatting nesting is limited to 64 levels.
 
 The parser creates structured text and style nodes with source offsets before LaTeX rendering. Heading and style names come from declarations next to the commands in the text template, for example `% notex-style bold NotesBold` and `% notex-heading section NotesSection`. A custom template must declare both headings and styles and define each corresponding one-argument command with `\newcommand`.
+
+## Mathematics and line breaks
+
+Write math inside notes, boxes, headings, and text styles:
+
+```text
+note(The probability is math{1/10}. A nested root is math{sqrt(1/10)}.)
+formulabox(math{v=d/t})
+note(bold{Remember math{x_i^2 + 2*x_i + 1 = (x_i+1)^2}.})
+```
+
+`math{1/10}` generates `\(\frac{1}{10}\)`. Operators respect algebraic precedence; group a compound numerator or denominator with parentheses, for example `(x+1)/(x-1)`. Use `^` or `**` for powers and `_` for subscripts. `2(x+1)` is implicit multiplication; write `x*(y+1)` when a variable followed by parentheses means multiplication, because `f(x)` is function notation.
+
+For standalone display equations, use `equation(...)` or a top-level `math{...}`:
+
+```text
+equation(summation(i^2,i,1,n))
+equation(integral(x^2,x,0,1))
+equation(derivative(x^3,x,2))
+equation(partial(x*y,x))
+equation(
+  a=(x+1)^2
+  =x^2+2*x+1
+)
+note(First line. newline() Second line.)
+```
+
+Within math, actual top-level newlines, `;`, or `newline()` separate equation rows. Rows align at their relation sign; later rows may start with `=` and omit the left side. Newlines inside function arguments or grouped expressions are only whitespace. A standalone `newline()` adds paragraph spacing.
+
+Math supports nested fractions and roots, sums and products, definite/indefinite integrals, ordinary/partial derivatives, limits, binomial coefficients, trig/log functions, Greek symbols, scientific notation, and factorials. See [the math syntax guide](docs/math-syntax.md) for argument order, aliases, operators, and examples. These expressions **typeset mathematics without evaluating, simplifying, differentiating, integrating, or solving it**. Derivative orders must be positive integers. Raw LaTeX/Python commands are rejected, and syntax errors report their location in the original notes file.
+
+`note(math\{1/10\})` prints `math{1/10}` literally. `math`, `equation`, and `newline` are built-in top-level names; `math` and `newline` are reserved inside text and cannot be replaced by template styles. The original `note` environment can still exist in the box template.
 
 ## CLI
 
@@ -142,6 +174,9 @@ src/notex/
   templates.py    # Template declarations and validation
   parser.py       # Source text to structured nodes
   renderer.py     # Structured nodes to LaTeX
+  math_parser.py  # Mathematical expressions, precedence, and function calls
+  math_renderer.py # Math nodes to LaTeX
+  syntax.py       # Shared built-in keywords and nesting limit
   service.py      # Conversion API and atomic publication
   compiler.py     # Timeout-bounded PDF builds
   cli.py          # Installed command-line interface

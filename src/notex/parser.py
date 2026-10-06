@@ -4,11 +4,11 @@ import re
 from collections.abc import Mapping
 from typing import NoReturn
 
-from .models import Box, ParseError, SourceSpan, Style, Text
+from .math_parser import MathParser
+from .models import Box, InlineNode, LineBreak, Math, ParseError, SourceSpan, Style, Text
+from .syntax import BUILTIN_EXPRESSIONS, MAX_NESTING
 from .templates import DEFAULT_TEXT_TEMPLATE, load_text_commands
 
-# Limit recursive groups before Python's recursion limit can be reached.
-MAX_NESTING = 64
 NAME_PATTERN = re.compile(r"[A-Za-z][A-Za-z0-9_]*")
 
 
@@ -24,7 +24,7 @@ class NotesParser:
     ):
         self.source = source
         # Plain paragraphs are built in even if a custom box template omits note.
-        self.allowed_names = allowed_names | {"note"} | headings.keys()
+        self.allowed_names = allowed_names | BUILTIN_EXPRESSIONS | headings.keys()
         self.styles = styles
         self.pos = 0
 
@@ -39,9 +39,25 @@ class NotesParser:
         while self.pos < len(self.source) and self.source[self.pos].isspace():
             self.pos += 1
 
+    def math_content(
+        self, closing: str, opening: int, depth: int, *, display: bool = False
+    ) -> Math:
+        """Hand the unchanged math region to its grammar, preserving source offsets."""
+        parser = MathParser(self.source, self.pos, closing, opening, depth)
+        node = parser.parse(display=display)
+        self.pos = parser.end
+        return node
+
+    def empty_arguments(self, opening: int) -> None:
+        """Consume newline() while rejecting accidental nonempty arguments."""
+        self.skip_space()
+        if self.pos == len(self.source) or self.source[self.pos] != ")":
+            self.fail("newline() takes no arguments", opening)
+        self.pos += 1
+
     def content(
         self, closing: str | None, opening: int, depth: int = 0, context: str = "text"
-    ) -> tuple[Text | Style, ...]:
+    ) -> tuple[InlineNode, ...]:
         """Read children until the expected delimiter, or EOF if closing is None.
 
         Recursive calls share the cursor into the unchanged source. The opening
@@ -49,7 +65,7 @@ class NotesParser:
         """
         if depth > MAX_NESTING:
             self.fail(f"maximum nesting depth of {MAX_NESTING} exceeded", opening)
-        nodes: list[Text | Style] = []
+        nodes: list[InlineNode] = []
         buffer: list[str] = []
         start = self.pos
 
@@ -88,6 +104,27 @@ class NotesParser:
             )
             if match:
                 name = match.group()
+                if (
+                    boundary
+                    and name == "math"
+                    and self.source[match.end() : match.end() + 1] == "{"
+                ):
+                    flush()
+                    self.pos = match.end() + 1
+                    nodes.append(self.math_content("}", match.start(), depth + 1))
+                    start = self.pos
+                    continue
+                if (
+                    boundary
+                    and name == "newline"
+                    and self.source[match.end() : match.end() + 1] == "("
+                ):
+                    flush()
+                    self.pos = match.end() + 1
+                    self.empty_arguments(match.start())
+                    nodes.append(LineBreak(SourceSpan(match.start(), self.pos)))
+                    start = self.pos
+                    continue
                 if (
                     boundary
                     and name in self.styles
@@ -139,9 +176,27 @@ class NotesParser:
                 self.fail(f"unknown box name '{name}'", start)
             self.pos = match.end()
             self.skip_space()
+            if name == "math":
+                if self.pos == len(self.source) or self.source[self.pos] != "{":
+                    self.fail("expected '{' after 'math'", self.pos)
+                self.pos += 1
+                math_node = self.math_content("}", start, 1, display=True)
+                expressions.append(Box(name, (math_node,), SourceSpan(start, self.pos)))
+                self.skip_space()
+                continue
             if self.pos == len(self.source) or self.source[self.pos] != "(":
                 self.fail(f"expected '(' after '{name}'", self.pos)
             self.pos += 1
+            if name == "equation":
+                math_node = self.math_content(")", start, 1, display=True)
+                expressions.append(Box(name, (math_node,), SourceSpan(start, self.pos)))
+                self.skip_space()
+                continue
+            if name == "newline":
+                self.empty_arguments(start)
+                expressions.append(Box(name, (), SourceSpan(start, self.pos)))
+                self.skip_space()
+                continue
             children = list(self.content(")", start, context=f"'{name}'"))
             # Trim only outer whitespace, retaining original source offsets.
             if children and isinstance(children[0], Text):

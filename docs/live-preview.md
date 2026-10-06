@@ -43,7 +43,7 @@ Use a startup/session token and validate browser origins so unrelated websites c
 
 Start with a textarea, a PDF pane using the browser's PDF viewer, a status indicator, and a diagnostic list. Use revision-specific PDF URLs to avoid serving stale cached content. Preserve the last PDF through syntax errors and show which revision it represents. Keep source saves explicit initially, with a visible unsaved state.
 
-Add a richer code editor, syntax highlighting, and completion after the full edit-to-build flow works. Generate keyword completion from the loaded template registry rather than duplicating box/style names in JavaScript. Translate Python code-point offsets to the browser/editor's UTF-16 positions when highlighting diagnostics.
+Add a richer code editor, syntax highlighting, and completion after the full edit-to-build flow works. Generate keyword completion from the loaded template registry and built-in math function vocabulary rather than duplicating box/style/function names in JavaScript. Translate Python code-point offsets to the browser/editor's UTF-16 positions when highlighting diagnostics.
 
 Add browser tests for typing valid notes, introducing and fixing an error, receiving an older build, saving, and exporting a PDF. Parse diagnostics can point to notes directly; LaTeX errors should show the compiler log until generated-to-source mapping is implemented.
 

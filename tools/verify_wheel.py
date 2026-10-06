@@ -42,7 +42,11 @@ def main() -> int:
         )
         subprocess.run([sys.executable, "-c", check], cwd=root, env=environment, check=True)
         notes = root / "example.txt"
-        notes.write_text("title(Installed wheel) note(bold{Hello} & goodbye.)", encoding="utf-8")
+        notes.write_text(
+            "title(Installed wheel) note(bold{Hello} & goodbye. math{sqrt(1/10)}) "
+            "equation(derivative(x^2,x))",
+            encoding="utf-8",
+        )
         subprocess.run(
             [sys.executable, "-m", "notex", str(notes), "--json"],
             cwd=root,
@@ -51,6 +55,8 @@ def main() -> int:
         )
         if r"\NotesBold{Hello} \& goodbye." not in notes.with_suffix(".tex").read_text():
             raise RuntimeError("Installed wheel produced unexpected LaTeX")
+        if r"\sqrt{\frac{1}{10}}" not in notes.with_suffix(".tex").read_text():
+            raise RuntimeError("Installed wheel did not render nested mathematics")
     print("Installed-wheel smoke test passed")
     return 0
 

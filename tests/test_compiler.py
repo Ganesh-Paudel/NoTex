@@ -82,3 +82,22 @@ class CompilerTests(unittest.TestCase):
         result = convert_source((root / "notes.txt").read_text())
         pdf = compile_pdf(result.latex)
         self.assertTrue(pdf.content.startswith(b"%PDF-"))
+
+    @unittest.skipUnless(shutil.which("pdflatex"), "TeX Live is not installed")
+    def test_math_layout_and_edge_cases_compile_with_real_latex(self):
+        source = """
+            newline()
+            title(Math notation math{alpha+pi})
+            section(Equations math{x_i^2})
+            note(newline() newline() Start. math{sqrt(1/10)} newline() End.)
+            equation(1e3^2 + x_1! + root(x,3) + abs(x))
+            equation(sin(x)+cos(x)+tan(x)+asin(x)+acos(x)+atan(x))
+            equation(sinh(x)+cosh(x)+tanh(x)+ln(x)+log(x)+log(x,2)+exp(x))
+            equation(partial(partial(f(x,y),x),y))
+            equation(integral(integral(x*y,x,0,1),y,0,2))
+            equation(x=(-b+/-sqrt(b^2-4*a*c))/(2*a))
+            equation(alpha+beta+Gamma+θ+inf+hbar+nabla)
+            equation(x=1+1 newline() =2 newline() y=3)
+        """
+        result = compile_pdf(convert_source(source).latex)
+        self.assertTrue(result.content.startswith(b"%PDF-"))

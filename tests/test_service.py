@@ -66,6 +66,24 @@ class ServiceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "overlap"):
                 convert_source("question(hello)", text_template=path)
 
+    def test_templates_cannot_replace_builtin_math_syntax(self):
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "text.tex"
+            for declaration, replacement in (
+                ("% notex-style bold NotesBold", "% notex-style math NotesBold"),
+                ("% notex-style bold NotesBold", "% notex-style newline NotesBold"),
+                ("% notex-heading title NotesTitle", "% notex-heading equation NotesTitle"),
+            ):
+                with self.subTest(replacement=replacement):
+                    path.write_text(
+                        convert.DEFAULT_TEXT_TEMPLATE.read_text().replace(declaration, replacement)
+                    )
+                    with self.assertRaisesRegex(ValueError, "overlap"):
+                        convert_source("note(hello)", text_template=path)
+            path.write_text(r"\newtcolorbox{math}{}")
+            with self.assertRaisesRegex(ValueError, "overlap"):
+                convert_source("note(hello)", template=path)
+
     def test_untrusted_expression_names_cannot_inject_latex(self):
         node = Box("bad}\\input{file", (), SourceSpan(0, 0))
         with self.assertRaisesRegex(ValueError, "Unknown expression"):

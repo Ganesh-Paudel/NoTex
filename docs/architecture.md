@@ -17,13 +17,17 @@ flowchart LR
     PDF --> Writer
 ```
 
-`models.py` holds `Text`, `Style`, `Box`, `SourceSpan`, and `ParseError`. `Box` represents a top-level expression, including headings and plain note paragraphs. Spans use half-open character offsets into the original source. Error payloads carry zero-based offsets and one-based lines and columns.
+`models.py` holds `Text`, `Style`, `Math`, `MathExpression`, `LineBreak`, `Box`, `SourceSpan`, and `ParseError`. `Box` represents a top-level expression, including headings, display equations, and plain note paragraphs. Spans use half-open character offsets into the original source. Error payloads carry zero-based offsets and one-based lines and columns.
 
 `templates.py` discovers box environments and explicitly declared heading/style macros. It rejects missing or duplicate definitions and excludes ordinary TeX comments when checking commands. It is a declaration reader for the project's template conventions, not a complete TeX interpreter. Importing the installed library performs no template file reads; templates load when conversion is requested.
 
 `parser.py` reads the original input with one shared cursor. It consumes escapes once, produces nested style nodes, enforces matching delimiters, and limits recursive depth to 64. Compiled regular expressions match at the cursor without copying the remaining source. Whitespace is removed only from the outer edges of each expression.
 
-`renderer.py` consumes parsed nodes. It escapes literal text exactly once, validates expression names against the selected definitions, and emits only commands supplied by trusted templates. A `note` becomes ordinary paragraph text, a heading becomes a macro call, and another expression becomes a LaTeX environment. The generated article imports template files by absolute path.
+`math_parser.py` receives the original source and cursor when a `math{...}` region or `equation(...)` expression begins. It tokenizes only that region and uses precedence parsing to build typed math nodes. Division, powers, subscripts, unary signs, implicit multiplication, functions, and equation rows have explicit grammar rules. Arity and calculus variable/order checks report original source locations. Both recursive parsing and tree height are bounded; long left-associative chains cannot create an unbounded rendering recursion. There is no Python execution or raw LaTeX passthrough.
+
+`math_renderer.py` translates validated math nodes through a fixed command vocabulary. It groups fractions and scripts, renders supported functions, translates Greek names/symbols, and wraps output in inline or display math delimiters. Multiple rows use an `aligned` environment. Math typesetting performs no symbolic calculation. It also rejects malformed atom/function values in programmatically supplied nodes.
+
+`renderer.py` consumes parsed nodes. It escapes literal text exactly once, validates expression names against the selected definitions, and delegates math nodes to the math renderer. A `note` becomes ordinary paragraph text, a heading becomes a template macro call, a display equation becomes a math block, and another expression becomes a LaTeX environment. The generated article loads `amsmath` and `amssymb` and imports template files by absolute path.
 
 `service.py` exposes `convert_source()` for an in-memory snapshot. It has no artifact-writing side effects and rejects heading/box name collisions. Atomic publication writes a sibling temporary file, flushes it, preserves existing file permissions, and replaces the target. The CLI validates path and inode aliases before writing. Atomicity applies per file; publishing two files is not an all-or-nothing transaction.
 
