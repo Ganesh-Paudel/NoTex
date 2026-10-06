@@ -4,7 +4,7 @@ This collection provides **57 reusable box environments** for a broad range of s
 
 ## Files
 
-- `class_notes_boxes.tex`: one complete, compilable demonstration with all definitions and examples. It also works as a reusable preamble module.
+- `src/notex/templates/class_notes_boxes.tex`: one complete, compilable demonstration with all definitions and examples. It also works as a reusable preamble module.
 - `class_notes_boxes_guide.md`: this documentation.
 
 ## 1. Compile the demonstration
@@ -12,15 +12,15 @@ This collection provides **57 reusable box environments** for a broad range of s
 Install a LaTeX distribution with `tcolorbox`, `amsmath`, `amssymb`, `graphicx`, `booktabs`, `listings`, `geometry`, `fontenc`, `lmodern`, and `hyperref`. These are common TeX Live/MiKTeX packages. Use pdfLaTeX for the supplied examples.
 
 ```sh
-pdflatex -interaction=nonstopmode -halt-on-error class_notes_boxes.tex
-pdflatex -interaction=nonstopmode -halt-on-error class_notes_boxes.tex
+pdflatex -interaction=nonstopmode -halt-on-error src/notex/templates/class_notes_boxes.tex
+pdflatex -interaction=nonstopmode -halt-on-error src/notex/templates/class_notes_boxes.tex
 ```
 
 The second pass fills in the table of contents. Alternatively, upload the `.tex` file to a LaTeX editor and compile it. You do not need Python to use these boxes.
 
 ## 2. Use all boxes in a new document
 
-Keep `class_notes_boxes.tex` beside your new `lecture.tex`. Use:
+Copy `src/notex/templates/class_notes_boxes.tex` beside your new `lecture.tex`. Use:
 
 ```latex
 \documentclass[11pt]{article}

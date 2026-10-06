@@ -1,32 +1,58 @@
 % Reusable headings and text formatting for generated NoteX documents.
 % Load in the preamble after the document class and font packages.
+% notex-heading title NotesTitle
 \newcommand{\NotesTitle}[1]{\begin{center}{\Huge\bfseries #1\par}\end{center}}
+% notex-heading subtitle NotesSubtitle
 \newcommand{\NotesSubtitle}[1]{\begin{center}{\Large #1\par}\end{center}}
 % Article documents have no native chapter command.
+% notex-heading chapter NotesChapter
 \newcommand{\NotesChapter}[1]{\section*{#1}}
+% notex-heading section NotesSection
 \newcommand{\NotesSection}[1]{\section{#1}}
+% notex-heading subsection NotesSubsection
 \newcommand{\NotesSubsection}[1]{\subsection{#1}}
+% notex-heading subsubsection NotesSubsubsection
 \newcommand{\NotesSubsubsection}[1]{\subsubsection{#1}}
+% notex-heading paragraph NotesParagraph
 \newcommand{\NotesParagraph}[1]{\paragraph{#1}}
+% notex-heading subparagraph NotesSubparagraph
 \newcommand{\NotesSubparagraph}[1]{\subparagraph{#1}}
 
+% notex-style bold NotesBold
 \newcommand{\NotesBold}[1]{\textbf{#1}}
+% notex-style italic NotesItalic
 \newcommand{\NotesItalic}[1]{\textit{#1}}
+% notex-style underline NotesUnderline
 \newcommand{\NotesUnderline}[1]{\underline{#1}}
+% notex-style emphasis NotesEmphasis
 \newcommand{\NotesEmphasis}[1]{\emph{#1}}
+% notex-style monospace NotesMonospace
 \newcommand{\NotesMonospace}[1]{\texttt{#1}}
+% notex-style smallcaps NotesSmallcaps
 \newcommand{\NotesSmallcaps}[1]{\textsc{#1}}
+% notex-style superscript NotesSuperscript
 \newcommand{\NotesSuperscript}[1]{\textsuperscript{#1}}
+% notex-style subscript NotesSubscript
 \newcommand{\NotesSubscript}[1]{\textsubscript{#1}}
 
 % Group each size change so it cannot affect subsequent text.
+% notex-style tiny NotesTiny
 \newcommand{\NotesTiny}[1]{{\tiny #1}}
+% notex-style scriptsize NotesScriptsize
 \newcommand{\NotesScriptsize}[1]{{\scriptsize #1}}
+% notex-style footnotesize NotesFootnotesize
 \newcommand{\NotesFootnotesize}[1]{{\footnotesize #1}}
+% notex-style small NotesSmall
 \newcommand{\NotesSmall}[1]{{\small #1}}
+% notex-style normalsize NotesNormalsize
 \newcommand{\NotesNormalsize}[1]{{\normalsize #1}}
+% notex-style large NotesLarge
 \newcommand{\NotesLarge}[1]{{\large #1}}
+% notex-style larger NotesLarger
 \newcommand{\NotesLarger}[1]{{\Large #1}}
+% notex-style largest NotesLargest
 \newcommand{\NotesLargest}[1]{{\LARGE #1}}
+% notex-style huge NotesHuge
 \newcommand{\NotesHuge}[1]{{\huge #1}}
+% notex-style hugest NotesHugest
 \newcommand{\NotesHugest}[1]{{\Huge #1}}

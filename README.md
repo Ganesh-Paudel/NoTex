@@ -4,6 +4,29 @@ NoteX aims to make taking structured notes with LaTeX easy. Write your content i
 
 The goal is to spend time writing and studying your notes without having to write LaTeX boilerplate for every box.
 
+## Quick start
+
+Requires Python 3.10 or newer. The converter has no third-party runtime Python dependencies. From a checkout:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install .
+notex notes.txt
+```
+
+The `notex` command and `python -m notex` use the installed package. The original `python3 convert.py notes.txt` command also works directly from this checkout without installation.
+
+For PDF output on Ubuntu/Debian:
+
+```sh
+sudo apt update
+sudo apt install texlive-latex-recommended texlive-latex-extra lmodern
+notex notes.txt --pdf
+```
+
+This produces `notes.tex` and `notes.pdf`. PDF compilation runs in a temporary directory, disables shell escape, and has a 30-second timeout. A syntax or compilation failure preserves the previous generated files. Each output file is replaced atomically; publication of the pair is not a filesystem transaction.
+
 ## Note syntax
 
 For example, a text file could contain:
@@ -16,7 +39,7 @@ definitionbox(Velocity is the rate of change of position.)
 summarybox(The main takeaways from today's lesson.)
 ```
 
-`note(...)` becomes a regular paragraph without a box or title. Other expressions map to the corresponding box environment defined in [class_notes_boxes.tex](class_notes_boxes.tex). For example:
+`note(...)` becomes a regular paragraph without a box or title. Other expressions map to the corresponding box environment defined in [class_notes_boxes.tex](src/notex/templates/class_notes_boxes.tex). For example:
 
 ```text
 question(This is a question)
@@ -38,7 +61,7 @@ LaTeX special characters are escaped automatically. Raw LaTeX commands and math 
 
 ## Headings and text formatting
 
-[class_notes_text.tex](class_notes_text.tex) defines the headings and text formatting loaded automatically by the converter. Use `--text-template PATH` to select another definitions file.
+[class_notes_text.tex](src/notex/templates/class_notes_text.tex) defines the headings and text formatting loaded automatically by the converter. Use `--text-template PATH` to select another definitions file.
 
 Headings use the same parentheses syntax as boxes:
 
@@ -69,50 +92,100 @@ Sizes from smallest to largest: `tiny`, `scriptsize`, `footnotesize`, `small`, `
 
 Escape literal braces with `\{` and `\}`; for example, `note(bold\{literal\})` prints the formatting syntax literally.
 
-## Convert your notes
+Unescaped parentheses and braces must balance, including inside formatted text. Escapes `\(`, `\)`, `\{`, `\}`, and `\\` are interpreted once. Malformed input reports a line and column in the original notes file. Delimiter and formatting nesting is limited to 64 levels.
 
-Use Python 3.10 or newer. No third-party Python packages are required. Save your notes as a UTF-8 text file, then run:
+The parser creates structured text and style nodes with source offsets before LaTeX rendering. Heading and style names come from declarations next to the commands in the text template, for example `% notex-style bold NotesBold` and `% notex-heading section NotesSection`. A custom template must declare both headings and styles and define each corresponding one-argument command with `\newcommand`.
 
-```sh
-python3 convert.py notes.txt -o notes.tex
-```
-
-If you omit `-o`, the output uses the input filename with a `.tex` extension. Unknown box names and malformed expressions produce an error with a line and column number.
-
-To create a PDF, install the LaTeX packages described below and run:
+## CLI
 
 ```sh
-pdflatex -interaction=nonstopmode -halt-on-error notes.tex
+notex notes.txt                       # Generate notes.tex
+notex notes.txt -o lecture.tex        # Choose the output filename
+notex notes.txt --pdf --timeout 60    # Also create notes.pdf
+notex notes.txt --json                # Structured result or diagnostics
+notex --version
 ```
 
-The generated document references the absolute locations of `class_notes_boxes.tex` and `class_notes_text.tex`, so you can compile it locally from another directory. To move it to another machine or an online editor, include both definitions files and change the generated `\input` lines to relative filenames.
+Select trusted custom LaTeX definitions with `--template PATH` and `--text-template PATH`. Output files must not alias the input, either template, or one another, including symlinks and hard links. Output directories must already exist.
 
-## Current state
+Exit codes: `0` for success, `1` for conversion/file/build errors, and `2` for invalid command-line arguments. With `--json`, successful results go to stdout; conversion diagnostics go to stderr. Argument errors retain argparse's standard usage output.
 
-The project currently contains a text-to-LaTeX converter and the LaTeX foundation:
+A syntax diagnostic includes `kind`, `message`, `offset`, `line`, `column`, and `source`. Offsets count Python Unicode characters from zero; line and column numbers start at one. The renderer escapes ordinary text and validates expression names. Custom templates execute local LaTeX and must be trusted; disabling shell escape does not make TeX an isolation boundary for an internet-facing service.
 
-- [convert.py](convert.py): parser, plain-text escaping, and command-line document generation.
-- [class_notes_boxes.tex](class_notes_boxes.tex): reusable box definitions and a complete demonstration document.
-- [class_notes_boxes_guide.md](class_notes_boxes_guide.md): the box catalog, usage instructions, and examples.
+The generated document imports both templates by absolute path. To move it to another machine or an online editor, copy the template files from `src/notex/templates/` beside the document and change the generated `\input` lines to relative filenames.
 
-You can compile the demonstration or use the boxes directly in a LaTeX document today.
+The PDF helper currently uses one pdfLaTeX pass, appropriate for the supplied note examples. It does not yet resolve multi-pass features such as tables of contents and cross-references. For a custom document that needs those features, use `latexmk` or run pdfLaTeX again.
 
-## Try the existing boxes
+## Python API
 
-Install a LaTeX distribution such as TeX Live or MiKTeX with the packages listed in the [guide](class_notes_boxes_guide.md#1-compile-the-demonstration). From the project directory, run:
+```python
+from notex import ParseError, convert_source
+from notex.compiler import compile_pdf
+
+try:
+    result = convert_source("section(Motion) note(bold{Remember the units.})")
+except ParseError as error:
+    print(error.as_dict())
+else:
+    print(result.latex)
+    pdf = compile_pdf(result.latex)
+    # pdf.content contains the PDF bytes; no output file has been written.
+```
+
+`convert_source()` accepts a complete source snapshot and returns an immutable conversion result with the parsed expressions and generated LaTeX. It reads templates but does not write artifacts. This API is the shared foundation for the CLI and planned live preview.
+
+## Project structure
+
+```text
+src/notex/
+  models.py       # Syntax tree and structured diagnostics
+  templates.py    # Template declarations and validation
+  parser.py       # Source text to structured nodes
+  renderer.py     # Structured nodes to LaTeX
+  service.py      # Conversion API and atomic publication
+  compiler.py     # Timeout-bounded PDF builds
+  cli.py          # Installed command-line interface
+  templates/      # Bundled box and text-formatting definitions
+convert.py        # Compatibility wrapper for the original command/API
+tests/           # Parser, CLI, file protection, and PDF regression tests
+tools/           # Installed-wheel verification
+```
+
+The LaTeX templates now live in `src/notex/templates/` and ship in the installed wheel. Edit those canonical files when changing bundled styles. No duplicate root-level templates are maintained. See the [box guide](class_notes_boxes_guide.md) for the full template catalog; `note(...)` is a plain paragraph in the converter even though the LaTeX collection retains a `note` environment for direct use.
+
+## Development
 
 ```sh
-pdflatex -interaction=nonstopmode -halt-on-error class_notes_boxes.tex
-pdflatex -interaction=nonstopmode -halt-on-error class_notes_boxes.tex
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[dev]' -c requirements-dev.txt
+ruff check .
+ruff format --check .
+mypy
+python -m coverage run -m unittest discover -s tests
+python -m coverage report
+python -m build
+python -m twine check --strict dist/*
+python tools/verify_wheel.py dist/*.whl
 ```
 
-This creates `class_notes_boxes.pdf`. The second pass fills in the table of contents. You can also upload the `.tex` file to a LaTeX editor and compile it there.
+The direct development tools are pinned in `requirements-dev.txt`; indirect dependencies resolve for the selected Python version. Runtime dependencies remain empty. Tests use standard-library `unittest`. The real PDF integration test skips when `pdflatex` is unavailable; CI has a dedicated LaTeX job to exercise it. The regular CI matrix covers Python 3.10, 3.12, and 3.13, lint, formatting, strict type checks, an 85% coverage floor, distribution metadata, and installed-wheel resource loading.
 
-## Roadmap
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the change workflow and [architecture](docs/architecture.md) for design details.
 
-1. **Plain text to LaTeX (implemented):** convert box expressions in a text file into a `.tex` document using the existing box definitions.
-2. **Incremental builds:** avoid rebuilding everything on every edit and reuse unchanged work where possible.
-3. **Live preview:** show the rendered notes as the source text changes.
-4. **Richer notes:** extend the syntax and workflow as more complex note-taking needs arise.
+## Try the LaTeX box demonstration
 
-Incremental builds and live preview are planned improvements.
+From the project directory, with TeX Live installed:
+
+```sh
+pdflatex -interaction=nonstopmode -halt-on-error src/notex/templates/class_notes_boxes.tex
+pdflatex -interaction=nonstopmode -halt-on-error src/notex/templates/class_notes_boxes.tex
+```
+
+This creates `class_notes_boxes.pdf`; the second pass fills its table of contents. You can also copy the template into another LaTeX project and use it independently of Python.
+
+## Live preview roadmap
+
+The converter and PDF build foundation are implemented. Watching notes, scheduling builds, and displaying updates are the next milestones; there is no preview server or watcher yet. See [the live preview implementation plan](docs/live-preview.md) for architecture, build ordering, API proposals, and acceptance tests.
+
+Before a public package release, choose a project license and confirm the distribution name. No license or public registry ownership has been assumed.

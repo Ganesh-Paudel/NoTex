@@ -1,0 +1,9 @@
+# Constraints for the development tools validated for this project.
+# Use: python -m pip install -e '.[dev]' -c requirements-dev.txt
+# Runtime dependencies remain empty; indirect tooling dependencies are resolved
+# per Python version rather than freezing platform-specific packages.
+build==1.6.1
+coverage==7.16.2
+mypy==1.20.2
+ruff==0.16.10
+twine==6.2.0

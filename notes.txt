@@ -2,9 +2,14 @@ title(NoteX Formatting and Box Examples)
 subtitle(A guide to structured class notes)
 chapter(Text Formatting)
 section(Headings and Styles)
+
 subsection(Inline Formatting)
+subsection(Another Section)
+
 subsubsection(Combining Styles)
+
 paragraph(Text Styles)
+
 note(bold{Bold text}, italic{italic text}, underline{underlined text}, emphasis{emphasized text}, monospace{monospace text}, and smallcaps{Small Capitals}.)
 note(Combine styles with bold{italic{bold and italic}}. Write x superscript{2} and H subscript{2}O.)
 subparagraph(Text Sizes)
