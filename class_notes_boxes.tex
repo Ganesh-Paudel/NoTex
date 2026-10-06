@@ -1,0 +1,564 @@
+% CLASS NOTES BOXES -- standalone example and reusable preamble module.
+% Compile this file directly, or load it in another document's preamble:
+% \def\NotesBoxesOnly{1}
+% \input{class_notes_boxes.tex}
+% See class_notes_boxes_guide.md for the complete catalog and instructions.
+
+\ifdefined\NotesBoxesOnly
+\else
+  \documentclass[11pt]{article}
+  \usepackage[margin=1in]{geometry}
+  \usepackage[T1]{fontenc}
+  \usepackage{lmodern}
+\fi
+
+\usepackage{amsmath,amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{listings}
+
+% Shared appearance. The title text is always bold; body text is normal
+% unless an environment (answer) explicitly changes it.
+\tcbset{
+  notesbase/.style={enhanced,breakable,boxrule=0.7pt,arc=2mm,
+    left=3mm,right=3mm,top=2mm,bottom=2mm,
+    before skip=10pt,after skip=10pt,
+    fonttitle=\bfseries,fontupper=\normalfont,
+    coltext=black,coltitle=white},
+  notesblue/.style={colback=blue!3!white,colframe=blue!45!black,
+    colbacktitle=blue!45!black},
+  notesgreen/.style={colback=green!6!white,colframe=green!30!black,
+    colbacktitle=green!12!white,coltitle=green!20!black},
+  notesgray/.style={colback=black!2!white,colframe=black!55,
+    colbacktitle=black!65},
+  notesamber/.style={colback=yellow!12!white,colframe=orange!60!black,
+    colbacktitle=yellow!28!white,coltitle=black!85},
+  notespurple/.style={colback=violet!4!white,colframe=violet!45!black,
+    colbacktitle=violet!45!black},
+  noteswarning/.style={colback=black!85,colframe=yellow!80!orange,
+    colbacktitle=black!90,coltitle=yellow!85!white,coltext=yellow!85!white},
+  notesred/.style={colback=red!5!white,colframe=red!65!black,
+    colbacktitle=red!65!black}
+}
+
+% Convenient optional fields for any box.
+\newcommand{\NotesField}[2]{\par\noindent\textbf{#1:} #2\par}
+
+% A literal code style: spaces, braces, underscores and percent signs
+% inside lstlisting do not need LaTeX escaping.
+\lstdefinestyle{notescode}{basicstyle=\small\ttfamily,
+  breaklines=true,columns=fullflexible,keepspaces=true,
+  showstringspaces=false,tabsize=4}
+
+% BOX DEFINITIONS. All boxes accept optional tcolorbox keys in [...].
+
+% Everyday learning
+\newtcolorbox{note}[1][]{notesbase,notesgreen,
+  title={Note},#1}
+\newtcolorbox{definitionbox}[1][]{notesbase,notesblue,
+  title={Definition},#1}
+\newtcolorbox{conceptbox}[1][]{notesbase,notesblue,
+  title={Key Concept},#1}
+\newtcolorbox{notationbox}[1][]{notesbase,notesblue,
+  title={Notation},#1}
+\newtcolorbox{objectivebox}[1][]{notesbase,notesgreen,
+  title={Learning Objectives},#1}
+\newtcolorbox{contextbox}[1][]{notesbase,notesgray,
+  title={Background / Context},#1}
+\newtcolorbox{connectionbox}[1][]{notesbase,notesgreen,
+  title={Connection},#1}
+\newtcolorbox{summarybox}[1][]{notesbase,notesgreen,
+  title={Summary},#1}
+
+% Questions and study
+\newtcolorbox[auto counter]{question}[1][]{notesbase,notesblue,
+  title={Question~\thetcbcounter},#1}
+\newtcolorbox{answer}[1][]{notesbase,notesgray,
+  title={Answer},fontupper=\itshape,#1}
+\newtcolorbox{examplebox}[1][]{notesbase,notesgray,
+  title={Example},#1}
+\newtcolorbox{solutionbox}[1][]{notesbase,notesgray,
+  title={Worked Solution},#1}
+\newtcolorbox{practicebox}[1][]{notesbase,notesblue,
+  title={Practice},#1}
+\newtcolorbox{recallbox}[1][]{notesbase,notespurple,
+  title={Active Recall},#1}
+\newtcolorbox{hintbox}[1][]{notesbase,notesgreen,
+  title={Hint},#1}
+\newtcolorbox{misconceptionbox}[1][]{notesbase,notesamber,
+  title={Common Mistake},#1}
+\newtcolorbox{askbox}[1][]{notesbase,notesamber,
+  title={Ask / Clarify},#1}
+\newtcolorbox{actionbox}[1][]{notesbase,notespurple,
+  title={Action Item},#1}
+\newtcolorbox{reflectionbox}[1][]{notesbase,notespurple,
+  title={Reflection},#1}
+
+% Math and quantitative reasoning
+\newtcolorbox{formulabox}[1][]{notesbase,notesblue,
+  title={Formula / Rule},#1}
+\newtcolorbox{theorembox}[1][]{notesbase,notesblue,
+  title={Theorem / Principle},#1}
+\newtcolorbox{proofbox}[1][]{notesbase,notesgray,
+  title={Proof},#1}
+\newtcolorbox{derivationbox}[1][]{notesbase,notesgray,
+  title={Derivation},#1}
+\newtcolorbox{assumptionbox}[1][]{notesbase,notesamber,
+  title={Assumptions},#1}
+\newtcolorbox{givenbox}[1][]{notesbase,notesgray,
+  title={Given / Find},#1}
+\newtcolorbox{unitsbox}[1][]{notesbase,notesblue,
+  title={Units / Dimensions},#1}
+\newtcolorbox{checkbox}[1][]{notesbase,notesgreen,
+  title={Result Check},#1}
+\newtcolorbox{specialcasebox}[1][]{notesbase,notesamber,
+  title={Special Case / Exception},#1}
+
+% Science, labs, and research
+\newtcolorbox{hypothesisbox}[1][]{notesbase,notesblue,
+  title={Hypothesis},#1}
+\newtcolorbox{variablesbox}[1][]{notesbase,notesblue,
+  title={Variables / Controls},#1}
+\newtcolorbox{equipmentbox}[1][]{notesbase,notesgray,
+  title={Equipment / Materials},#1}
+\newtcolorbox{procedurebox}[1][]{notesbase,notesgray,
+  title={Procedure / Method},#1}
+\newtcolorbox{observationbox}[1][]{notesbase,notesgray,
+  title={Observation},#1}
+\newtcolorbox{databox}[1][]{notesbase,notesgray,
+  title={Data},#1}
+\newtcolorbox{uncertaintybox}[1][]{notesbase,notesamber,
+  title={Uncertainty / Error},#1}
+\newtcolorbox{analysisbox}[1][]{notesbase,notesgray,
+  title={Analysis},#1}
+\newtcolorbox{conclusionbox}[1][]{notesbase,notesgreen,
+  title={Conclusion},#1}
+
+% Humanities, languages, and social sciences
+\newtcolorbox{claimbox}[1][]{notesbase,notesblue,
+  title={Claim / Thesis},#1}
+\newtcolorbox{evidencebox}[1][]{notesbase,notesgray,
+  title={Evidence / Source},#1}
+\newtcolorbox{quotationbox}[1][]{notesbase,notesgray,
+  title={Quotation},#1}
+\newtcolorbox{interpretationbox}[1][]{notesbase,notespurple,
+  title={Interpretation},#1}
+\newtcolorbox{counterargumentbox}[1][]{notesbase,notesamber,
+  title={Counterargument},#1}
+\newtcolorbox{comparisonbox}[1][]{notesbase,notesgray,
+  title={Comparison},#1}
+\newtcolorbox{timelinebox}[1][]{notesbase,notesgray,
+  title={Timeline},#1}
+\newtcolorbox{casebox}[1][]{notesbase,notesgray,
+  title={Case Study},#1}
+\newtcolorbox{vocabularybox}[1][]{notesbase,notesblue,
+  title={Vocabulary},#1}
+\newtcolorbox{grammarbox}[1][]{notesbase,notesblue,
+  title={Grammar / Language Pattern},#1}
+
+% Programming, engineering, and practical work
+\newtcolorbox{codebox}[1][]{notesbase,notesgray,
+  title={Code},#1}
+\newtcolorbox{outputbox}[1][]{notesbase,notesgray,
+  title={Expected / Actual Output},#1}
+\newtcolorbox{debugbox}[1][]{notesbase,notesamber,
+  title={Error / Fix},#1}
+\newtcolorbox{designbox}[1][]{notesbase,notespurple,
+  title={Design Decision},#1}
+\newtcolorbox{testbox}[1][]{notesbase,notesgreen,
+  title={Test Case},#1}
+\newtcolorbox{figurebox}[1][]{notesbase,notesgray,
+  title={Figure / Diagram},#1}
+\newtcolorbox{techniquebox}[1][]{notesbase,notesgray,
+  title={Technique / Skill},#1}
+\newtcolorbox{feedbackbox}[1][]{notesbase,notespurple,
+  title={Feedback / Critique},#1}
+
+% Safety and cautions
+\newtcolorbox{warning}[1][]{notesbase,noteswarning,
+  title={Warning},#1}
+\newtcolorbox{danger}[1][]{notesbase,notesred,
+  title={Danger},#1}
+
+% DEMONSTRATION DOCUMENT: skipped when NotesBoxesOnly is defined.
+\ifdefined\NotesBoxesOnly
+\else
+\usepackage[hidelinks]{hyperref}
+\title{Class Notes Box Collection}
+\author{Reusable LaTeX environments for learning and review}
+\date{}
+\begin{document}
+\maketitle
+This file contains 57 reusable box types for a broad range of classes.
+The examples demonstrate formatting; replace their contents with your notes.
+Use ordinary paragraphs between boxes to keep your notes readable.
+\tableofcontents
+\clearpage
+\section{Everyday learning}
+\subsection{Note}
+{\small\texttt{note}: Supplementary explanation or a helpful reminder.}
+\begin{note}
+Review this topic after the next lecture.
+\end{note}
+\subsection{Definition}
+{\small\texttt{definitionbox}: A term with its precise meaning.}
+\begin{definitionbox}
+Velocity is the rate of change of position with respect to time.
+\end{definitionbox}
+\subsection{Key Concept}
+{\small\texttt{conceptbox}: An important idea in your own words.}
+\begin{conceptbox}
+A net force changes the velocity of an object.
+\end{conceptbox}
+\subsection{Notation}
+{\small\texttt{notationbox}: Explain symbols, abbreviations, and conventions.}
+\begin{notationbox}
+$m$ denotes mass; $a$ denotes acceleration.
+\end{notationbox}
+\subsection{Learning Objectives}
+{\small\texttt{objectivebox}: State what you should be able to explain or do.}
+\begin{objectivebox}
+Explain the difference between speed and velocity.
+\end{objectivebox}
+\subsection{Background / Context}
+{\small\texttt{contextbox}: Give background needed to understand a topic.}
+\begin{contextbox}
+This lesson assumes familiarity with vectors.
+\end{contextbox}
+\subsection{Connection}
+{\small\texttt{connectionbox}: Connect a topic to earlier lessons or another subject.}
+\begin{connectionbox}
+Velocity connects calculus derivatives with physical motion.
+\end{connectionbox}
+\subsection{Summary}
+{\small\texttt{summarybox}: Record the main takeaways of a lesson.}
+\begin{summarybox}
+Identify forces, choose axes, and then apply the equations of motion.
+\end{summarybox}
+
+\clearpage
+\section{Questions and study}
+\subsection{Question}
+{\small\texttt{question}: A numbered question; numbering increases automatically.}
+\begin{question}
+A net force of $20\,\mathrm{N}$ acts on a $5\,\mathrm{kg}$ object. Find its acceleration.
+\end{question}
+\subsection{Answer}
+{\small\texttt{answer}: An answer with automatically italicized prose.}
+\begin{answer}
+$a=F_{\mathrm{net}}/m=4\,\mathrm{m/s^2}$.
+\end{answer}
+\subsection{Example}
+{\small\texttt{examplebox}: A concrete illustration of an idea.}
+\begin{examplebox}
+A car travelling at constant speed around a bend still accelerates.
+\end{examplebox}
+\subsection{Worked Solution}
+{\small\texttt{solutionbox}: Show the reasoning and steps of a calculation.}
+\begin{solutionbox}
+Choose the positive direction. Calculate the net force. Divide by mass.
+\end{solutionbox}
+\subsection{Practice}
+{\small\texttt{practicebox}: An exercise to complete independently.}
+\begin{practicebox}
+Repeat the calculation with twice the mass.
+\end{practicebox}
+\subsection{Active Recall}
+{\small\texttt{recallbox}: A prompt to answer without consulting the notes.}
+\begin{recallbox}
+State the three laws of motion in your own words.
+\end{recallbox}
+\subsection{Hint}
+{\small\texttt{hintbox}: A small clue that does not reveal the entire solution.}
+\begin{hintbox}
+Start by drawing a free-body diagram.
+\end{hintbox}
+\subsection{Common Mistake}
+{\small\texttt{misconceptionbox}: Identify an error, explain why it fails, and give a correction.}
+\begin{misconceptionbox}
+Constant speed does not always mean zero acceleration.
+\end{misconceptionbox}
+\subsection{Ask / Clarify}
+{\small\texttt{askbox}: An unanswered question for an instructor or later research.}
+\begin{askbox}
+Under what conditions can friction be ignored?
+\end{askbox}
+\subsection{Action Item}
+{\small\texttt{actionbox}: A task, its next step, and an optional due date.}
+\begin{actionbox}
+Complete practice problems 1--5 before the next class.
+\end{actionbox}
+\subsection{Reflection}
+{\small\texttt{reflectionbox}: Evaluate your understanding, approach, or learning progress.}
+\begin{reflectionbox}
+I can draw the forces, but I need more practice choosing components.
+\end{reflectionbox}
+
+\clearpage
+\section{Math and quantitative reasoning}
+\subsection{Formula / Rule}
+{\small\texttt{formulabox}: An equation or rule, with variables, units, and conditions of use.}
+\begin{formulabox}
+$F_{\mathrm{net}}=ma$ for constant mass in an inertial reference frame.
+\end{formulabox}
+\subsection{Theorem / Principle}
+{\small\texttt{theorembox}: A formal result together with its hypotheses.}
+\begin{theorembox}
+If a function is continuous on a closed interval, it attains a maximum and a minimum.
+\end{theorembox}
+\subsection{Proof}
+{\small\texttt{proofbox}: A logical argument establishing a claim.}
+\begin{proofbox}
+State the assumptions, justify each inference, and establish the conclusion.
+\end{proofbox}
+\subsection{Derivation}
+{\small\texttt{derivationbox}: Develop an equation from definitions or established relationships.}
+\begin{derivationbox}
+Starting with $v=dx/dt$, integrate to relate displacement to velocity.
+\end{derivationbox}
+\subsection{Assumptions}
+{\small\texttt{assumptionbox}: Make the conditions of a model or calculation explicit.}
+\begin{assumptionbox}
+Neglect air resistance and treat gravitational acceleration as constant.
+\end{assumptionbox}
+\subsection{Given / Find}
+{\small\texttt{givenbox}: Separate known quantities from the target quantity.}
+\begin{givenbox}
+Given: mass and net force. Find: acceleration.
+\end{givenbox}
+\subsection{Units / Dimensions}
+{\small\texttt{unitsbox}: Define units, convert them, or check dimensions.}
+\begin{unitsbox}
+$1\,\mathrm{N}=1\,\mathrm{kg\,m/s^2}$.
+\end{unitsbox}
+\subsection{Result Check}
+{\small\texttt{checkbox}: Check sign, magnitude, units, limiting behavior, or plausibility.}
+\begin{checkbox}
+Doubling the mass at fixed force should halve the acceleration.
+\end{checkbox}
+\subsection{Special Case / Exception}
+{\small\texttt{specialcasebox}: Identify boundaries, exceptions, or cases requiring different treatment.}
+\begin{specialcasebox}
+The expression $1/x$ is undefined at $x=0$.
+\end{specialcasebox}
+
+\clearpage
+\section{Science, labs, and research}
+\subsection{Hypothesis}
+{\small\texttt{hypothesisbox}: A testable prediction with a rationale.}
+\begin{hypothesisbox}
+Increasing pendulum length will increase its period for small oscillations.
+\end{hypothesisbox}
+\subsection{Variables / Controls}
+{\small\texttt{variablesbox}: List independent, dependent, and controlled variables.}
+\begin{variablesbox}
+Independent: length. Dependent: period. Controlled: release angle.
+\end{variablesbox}
+\subsection{Equipment / Materials}
+{\small\texttt{equipmentbox}: List apparatus, quantities, and relevant specifications.}
+\begin{equipmentbox}
+String, a pendulum bob, a meter ruler, and a stopwatch.
+\end{equipmentbox}
+\subsection{Procedure / Method}
+{\small\texttt{procedurebox}: Numbered steps for carrying out a repeatable task.}
+\begin{procedurebox}
+Measure the length, time several oscillations, and repeat the measurement.
+\end{procedurebox}
+\subsection{Observation}
+{\small\texttt{observationbox}: Describe what was observed without mixing in interpretation.}
+\begin{observationbox}
+The measured period increased when the string was lengthened.
+\end{observationbox}
+\subsection{Data}
+{\small\texttt{databox}: Measurements or a small table with units and labels.}
+\begin{databox}
+Record the measured length and period for every trial.
+\end{databox}
+\subsection{Uncertainty / Error}
+{\small\texttt{uncertaintybox}: Discuss measurement uncertainty and systematic or random errors.}
+\begin{uncertaintybox}
+Reaction time contributes uncertainty to stopwatch measurements.
+\end{uncertaintybox}
+\subsection{Analysis}
+{\small\texttt{analysisbox}: Explain how data or evidence supports your interpretation.}
+\begin{analysisbox}
+Compare the trend with the model prediction before drawing a conclusion.
+\end{analysisbox}
+\subsection{Conclusion}
+{\small\texttt{conclusionbox}: State the result, evidence, and limits of the conclusion.}
+\begin{conclusionbox}
+The observed trend supports the prediction within the tested range.
+\end{conclusionbox}
+
+\clearpage
+\section{Humanities, languages, and social sciences}
+\subsection{Claim / Thesis}
+{\small\texttt{claimbox}: A position that needs support from evidence.}
+\begin{claimbox}
+The author uses setting to establish the central conflict.
+\end{claimbox}
+\subsection{Evidence / Source}
+{\small\texttt{evidencebox}: Evidence with enough source information to find it again.}
+\begin{evidencebox}
+Record the author, work, page or section, and the supporting detail.
+\end{evidencebox}
+\subsection{Quotation}
+{\small\texttt{quotationbox}: An exact quotation with its source and page or location.}
+\begin{quotationbox}
+Place a short exact quotation here and record its source.
+\end{quotationbox}
+\subsection{Interpretation}
+{\small\texttt{interpretationbox}: Explain what a passage, event, or piece of evidence means.}
+\begin{interpretationbox}
+Explain how the quoted language supports the claim.
+\end{interpretationbox}
+\subsection{Counterargument}
+{\small\texttt{counterargumentbox}: Present an objection fairly and evaluate a response.}
+\begin{counterargumentbox}
+An alternative interpretation may explain the same evidence differently.
+\end{counterargumentbox}
+\subsection{Comparison}
+{\small\texttt{comparisonbox}: Compare related ideas using the same criteria.}
+\begin{comparisonbox}
+Compare two theories by assumptions, predictions, evidence, and limitations.
+\end{comparisonbox}
+\subsection{Timeline}
+{\small\texttt{timelinebox}: Events in chronological order with their significance.}
+\begin{timelinebox}
+Record each date, event, and why it matters.
+\end{timelinebox}
+\subsection{Case Study}
+{\small\texttt{casebox}: Apply a model to a specific person, organization, event, or scenario.}
+\begin{casebox}
+Describe the situation, identify the relevant theory, and assess its fit.
+\end{casebox}
+\subsection{Vocabulary}
+{\small\texttt{vocabularybox}: A word, meaning, pronunciation, and an example sentence.}
+\begin{vocabularybox}
+Word: concise. Meaning: brief but clear. Example: Write a concise summary.
+\end{vocabularybox}
+\subsection{Grammar / Language Pattern}
+{\small\texttt{grammarbox}: A language pattern with examples and exceptions.}
+\begin{grammarbox}
+Record the rule, an example, and an exception if one applies.
+\end{grammarbox}
+
+\clearpage
+\section{Programming, engineering, and practical work}
+\subsection{Code}
+{\small\texttt{codebox}: A short code listing with its language and purpose.}
+\begin{codebox}
+Use a lstlisting environment inside this box for literal code.
+\end{codebox}
+\subsection{Expected / Actual Output}
+{\small\texttt{outputbox}: Record a program result, calculation output, or observed behavior.}
+\begin{outputbox}
+Expected output: 4.0. Actual output: 4.0.
+\end{outputbox}
+\subsection{Error / Fix}
+{\small\texttt{debugbox}: Record the symptom, root cause, correction, and verification.}
+\begin{debugbox}
+A null value caused the error; validate input before dereferencing it.
+\end{debugbox}
+\subsection{Design Decision}
+{\small\texttt{designbox}: Record a decision, alternatives, reasons, and trade-offs.}
+\begin{designbox}
+Separate parsing from rendering so either can change independently.
+\end{designbox}
+\subsection{Test Case}
+{\small\texttt{testbox}: Specify input, expected result, and pass or fail evidence.}
+\begin{testbox}
+Input: zero net force. Expected acceleration: zero.
+\end{testbox}
+\subsection{Figure / Diagram}
+{\small\texttt{figurebox}: A labeled diagram or image with a descriptive caption.}
+\begin{figurebox}
+Insert a diagram and explain what its arrows, axes, or labels represent.
+\end{figurebox}
+\subsection{Technique / Skill}
+{\small\texttt{techniquebox}: Describe a practical technique and its success criteria.}
+\begin{techniquebox}
+Record the setup, movement or action, and signs of correct execution.
+\end{techniquebox}
+\subsection{Feedback / Critique}
+{\small\texttt{feedbackbox}: Record feedback and a concrete improvement to make.}
+\begin{feedbackbox}
+Feedback: explain assumptions. Next revision: add an assumptions box.
+\end{feedbackbox}
+
+\clearpage
+\section{Safety and cautions}
+\subsection{Warning}
+{\small\texttt{warning}: A caution requiring attention; yellow text on a dark background.}
+\begin{warning}
+Verify the operating limits before using the equipment.
+\end{warning}
+\subsection{Danger}
+{\small\texttt{danger}: A serious hazard; red frame and title bar with a pale red body.}
+\begin{danger}
+Disconnect power before touching exposed electrical components.
+\end{danger}
+
+\clearpage
+\section{Richer contents and customization}
+\begin{formulabox}[title={Newton's Second Law},label={box:newton}]
+\[
+  \sum \vec{F}=m\vec{a}
+\]
+\NotesField{Symbols}{$m$ is mass; $\vec{a}$ is acceleration.}
+\NotesField{Units}{Force in newtons, mass in kilograms, acceleration in $\mathrm{m/s^2}$.}
+\NotesField{When it applies}{Constant mass, in an inertial reference frame.}
+\end{formulabox}
+
+\begin{procedurebox}
+\begin{enumerate}
+  \item Draw and label the forces.
+  \item Choose coordinate axes.
+  \item Resolve forces into components.
+  \item Apply the equation along each axis.
+\end{enumerate}
+\end{procedurebox}
+
+\begin{databox}[title={Measurements}]
+\centering
+\begin{tabular}{rr}
+\toprule
+Mass ($\mathrm{kg}$) & Force ($\mathrm{N}$) \\
+\midrule
+2 & 8 \\
+5 & 20 \\
+\bottomrule
+\end{tabular}
+\end{databox}
+
+\begin{codebox}[title={Python: acceleration}]
+\begin{lstlisting}[style=notescode,language=Python]
+def acceleration(net_force, mass):
+    if mass <= 0:
+        raise ValueError("mass must be positive")
+    return net_force / mass
+
+print(acceleration(20, 5))
+\end{lstlisting}
+\end{codebox}
+
+\begin{outputbox}
+\begin{lstlisting}[style=notescode]
+4.0
+\end{lstlisting}
+\end{outputbox}
+
+\begin{question}[title={Question 12: custom display title}]
+This changes only the displayed title, not the automatic counter.
+\end{question}
+\begin{answer}
+The prose is italic; mathematical notation such as $F=ma$ keeps its normal mathematical formatting.
+\end{answer}
+
+\begin{note}[title={A customized title},colback=green!10!white]
+Use optional keys to change one box without changing all boxes.
+\end{note}
+
+\end{document}
+\fi
