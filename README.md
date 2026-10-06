@@ -16,7 +16,7 @@ definitionbox(Velocity is the rate of change of position.)
 summarybox(The main takeaways from today's lesson.)
 ```
 
-Each expression will map to the corresponding box environment defined in [class_notes_boxes.tex](class_notes_boxes.tex). For example:
+`note(...)` becomes a regular paragraph without a box or title. Other expressions map to the corresponding box environment defined in [class_notes_boxes.tex](class_notes_boxes.tex). For example:
 
 ```text
 question(This is a question)

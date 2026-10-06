@@ -98,6 +98,7 @@ def render_document(boxes: list[Box], template: Path = DEFAULT_TEMPLATE) -> str:
     if any(char in template_path for char in "%{}\n\r"):
         raise ValueError("The template path cannot contain %, braces, or newlines")
     body = "\n\n".join(
+        escape_latex(box.content) if box.name == "note" else
         f"\\begin{{{box.name}}}\n{escape_latex(box.content)}\n\\end{{{box.name}}}"
         for box in boxes
     )

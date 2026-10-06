@@ -41,10 +41,24 @@ class ConversionTests(unittest.TestCase):
 
     def test_every_defined_box_can_be_rendered(self):
         for name in self.names:
+            if name == "note":
+                continue
             with self.subTest(name=name):
                 document = render_document(parse_notes(f"{name}(50% & more)", self.names))
                 self.assertIn(f"\\begin{{{name}}}\n50\\% \\& more\n\\end{{{name}}}", document)
                 self.assertIn("\\def\\NotesBoxesOnly{1}", document)
+
+    def test_notes_render_as_plain_paragraphs_between_boxes(self):
+        document = render_document(parse_notes(
+            "question(Ready?) note(50% & more) note(Next paragraph.) answer(Yes.)",
+            self.names,
+        ))
+        self.assertIn(
+            "\\end{question}\n\n50\\% \\& more\n\nNext paragraph.\n\n\\begin{answer}",
+            document,
+        )
+        self.assertNotIn("\\begin{note}", document)
+        self.assertNotIn("\\end{note}", document)
 
 
 if __name__ == "__main__":
