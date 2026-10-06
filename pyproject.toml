@@ -23,7 +23,7 @@ notex = "notex.cli:main"
 dev = [
     "build>=1.2,<2",
     "coverage>=7.6,<8",
-    "mypy>=1.13,<2",
+    "mypy>=1.13,<3",
     "ruff>=0.9,<1",
     "twine>=6,<7",
 ]
