@@ -1,0 +1,8 @@
+note(This is a note)
+question(
+  A question??/
+)
+
+answer (
+Answer to that question.
+)
